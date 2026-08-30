@@ -1,0 +1,6 @@
+{
+  "name": "AFK Journey Team Optimizer",
+  "description": "Progressive Web App for AFK Journey hero roster management, meta analysis, and intelligent team formation optimization.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
