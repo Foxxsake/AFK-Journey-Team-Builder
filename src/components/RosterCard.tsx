@@ -56,14 +56,21 @@ export function RosterCard({ hero, rosterEntry, onToggle, onEdit }: RosterCardPr
       {/* Owned hero progression info */}
       {isOwned && (
         <div className="mt-1 flex flex-col items-center gap-0.5">
-          {level !== undefined && (
-            <span className="rounded bg-slate-700/50 px-1.5 py-0.5 text-[10px] font-bold text-amber-400">
-              Lv {level}
-            </span>
-          )}
-          {ascensionInfo && (
-            <span className={`rounded px-1.5 py-0.5 text-[9px] font-medium ${RARITY_COLORS[hero.rarity]}`}>
-              {ascensionInfo.shortLabel}
+          <div className="flex items-center gap-1">
+            {level !== undefined && (
+              <span className="rounded bg-slate-700/50 px-1.5 py-0.5 text-[10px] font-bold text-amber-400">
+                Lv {level}
+              </span>
+            )}
+            {ascensionInfo && (
+              <span className={`rounded px-1.5 py-0.5 text-[9px] font-medium ${RARITY_COLORS[hero.rarity]}`}>
+                {ascensionInfo.shortLabel}
+              </span>
+            )}
+          </div>
+          {(rosterEntry?.progression?.exclusiveWeaponLevel != null || rosterEntry?.progression?.signatureLevel != null) && (
+            <span className="rounded bg-amber-500/10 px-1.5 py-0.2 text-[9px] font-semibold text-amber-400 border border-amber-500/20">
+              EX +{rosterEntry.progression.exclusiveWeaponLevel ?? rosterEntry.progression.signatureLevel}
             </span>
           )}
           <button

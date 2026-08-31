@@ -26,7 +26,7 @@ interface RosterContextValue {
   setOwned: (heroId: string, owned: boolean) => void;
   setLevel: (heroId: string, level: number) => void;
   setAscension: (heroId: string, ascension: AscensionTier) => void;
-  setProgressionField: (heroId: string, field: 'signatureLevel' | 'furnitureLevel' | 'engravingLevel', value: number | undefined) => void;
+  setProgressionField: (heroId: string, field: 'exclusiveWeaponLevel' | 'signatureLevel' | 'furnitureLevel' | 'engravingLevel', value: number | undefined) => void;
   saveRosterHero: (hero: RosterHero) => void;
   removeHero: (heroId: string) => void;
   clearRoster: () => void;
@@ -107,12 +107,18 @@ export function RosterProvider({ children }: { children: ReactNode }) {
   }, [refresh]);
 
   const setProgressionField = useCallback(
-    (heroId: string, field: 'signatureLevel' | 'furnitureLevel' | 'engravingLevel', value: number | undefined) => {
+    (heroId: string, field: 'exclusiveWeaponLevel' | 'signatureLevel' | 'furnitureLevel' | 'engravingLevel', value: number | undefined) => {
       const existing = rosterService.getRosterHero(heroId);
       if (existing) {
+        const updatedProg = { ...existing.progression, [field]: value };
+        if (field === 'exclusiveWeaponLevel') {
+          updatedProg.signatureLevel = value;
+        } else if (field === 'signatureLevel') {
+          updatedProg.exclusiveWeaponLevel = value;
+        }
         rosterService.saveRosterHero({
           ...existing,
-          progression: { ...existing.progression, [field]: value },
+          progression: updatedProg,
           updatedAt: new Date().toISOString(),
         });
       }

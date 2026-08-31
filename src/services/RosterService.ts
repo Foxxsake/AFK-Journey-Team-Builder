@@ -63,6 +63,12 @@ export function validateRosterHero(entry: RosterHero): RosterIssue[] {
     issues.push({ severity: 'error', message: `Hero "${entry.heroId}" has invalid ascension: ${entry.progression?.ascension}`, heroId: entry.heroId });
   }
 
+  if (entry.progression?.exclusiveWeaponLevel !== undefined) {
+    if (!isNumber(entry.progression.exclusiveWeaponLevel) || entry.progression.exclusiveWeaponLevel < 0 || entry.progression.exclusiveWeaponLevel > 25) {
+      issues.push({ severity: 'error', message: `Hero "${entry.heroId}" has invalid exclusive weapon level: ${entry.progression.exclusiveWeaponLevel} (must be 0–25)`, heroId: entry.heroId });
+    }
+  }
+
   if (entry.progression?.signatureLevel !== undefined) {
     if (!isNumber(entry.progression.signatureLevel) || entry.progression.signatureLevel < 0) {
       issues.push({ severity: 'error', message: `Hero "${entry.heroId}" has invalid signature level`, heroId: entry.heroId });
@@ -144,13 +150,20 @@ export function parseRosterExport(data: unknown): ImportResult {
     const owned = r.owned !== false;
     const ascension = isAscension(r.ascension) ? r.ascension : DEFAULT_ASCENSION;
 
+    const exLevel = typeof r.exclusiveWeaponLevel === 'number'
+      ? r.exclusiveWeaponLevel
+      : typeof r.signatureLevel === 'number'
+        ? r.signatureLevel
+        : undefined;
+
     roster.push({
       heroId,
       owned,
       level: level < 0 ? 0 : level,
       progression: {
         ascension,
-        signatureLevel: typeof r.signatureLevel === 'number' ? r.signatureLevel : undefined,
+        exclusiveWeaponLevel: exLevel,
+        signatureLevel: exLevel,
         furnitureLevel: typeof r.furnitureLevel === 'number' ? r.furnitureLevel : undefined,
         engravingLevel: typeof r.engravingLevel === 'number' ? r.engravingLevel : undefined,
       },
@@ -238,7 +251,8 @@ class LocalRosterService implements RosterService {
         owned: h.owned,
         level: h.level,
         ascension: h.progression.ascension,
-        signatureLevel: h.progression.signatureLevel,
+        exclusiveWeaponLevel: h.progression.exclusiveWeaponLevel ?? h.progression.signatureLevel,
+        signatureLevel: h.progression.signatureLevel ?? h.progression.exclusiveWeaponLevel,
         furnitureLevel: h.progression.furnitureLevel,
         engravingLevel: h.progression.engravingLevel,
       })),

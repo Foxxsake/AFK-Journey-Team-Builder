@@ -18,17 +18,14 @@ export function RosterHeroEditor({ heroId, onClose }: RosterHeroEditorProps) {
   const entry = heroId ? rosterMap.get(heroId) : undefined;
 
   const [levelInput, setLevelInput] = useState('');
-  const [sigInput, setSigInput] = useState('');
-  const [furnInput, setFurnInput] = useState('');
-  const [engrInput, setEngrInput] = useState('');
+  const [exWeaponInput, setExWeaponInput] = useState('');
   const [showAscensionPicker, setShowAscensionPicker] = useState(false);
 
   useEffect(() => {
     if (entry) {
       setLevelInput(String(entry.level));
-      setSigInput(entry.progression.signatureLevel != null ? String(entry.progression.signatureLevel) : '');
-      setFurnInput(entry.progression.furnitureLevel != null ? String(entry.progression.furnitureLevel) : '');
-      setEngrInput(entry.progression.engravingLevel != null ? String(entry.progression.engravingLevel) : '');
+      const exVal = entry.progression.exclusiveWeaponLevel ?? entry.progression.signatureLevel;
+      setExWeaponInput(exVal != null ? String(exVal) : '');
     }
   }, [entry]);
 
@@ -44,33 +41,18 @@ export function RosterHeroEditor({ heroId, onClose }: RosterHeroEditorProps) {
     }
   }
 
-  function handleSigChange(v: string) {
-    setSigInput(v);
+  function handleExWeaponChange(v: string) {
+    setExWeaponInput(v);
     if (v === '') {
+      setProgressionField(heroId!, 'exclusiveWeaponLevel', undefined);
       setProgressionField(heroId!, 'signatureLevel', undefined);
     } else {
       const n = parseInt(v, 10);
-      if (!isNaN(n) && n >= 0) setProgressionField(heroId!, 'signatureLevel', n);
-    }
-  }
-
-  function handleFurnChange(v: string) {
-    setFurnInput(v);
-    if (v === '') {
-      setProgressionField(heroId!, 'furnitureLevel', undefined);
-    } else {
-      const n = parseInt(v, 10);
-      if (!isNaN(n) && n >= 0) setProgressionField(heroId!, 'furnitureLevel', n);
-    }
-  }
-
-  function handleEngrChange(v: string) {
-    setEngrInput(v);
-    if (v === '') {
-      setProgressionField(heroId!, 'engravingLevel', undefined);
-    } else {
-      const n = parseInt(v, 10);
-      if (!isNaN(n) && n >= 0) setProgressionField(heroId!, 'engravingLevel', n);
+      if (!isNaN(n) && n >= 0) {
+        const clamped = Math.min(25, n);
+        setProgressionField(heroId!, 'exclusiveWeaponLevel', clamped);
+        setProgressionField(heroId!, 'signatureLevel', clamped);
+      }
     }
   }
 
@@ -80,6 +62,9 @@ export function RosterHeroEditor({ heroId, onClose }: RosterHeroEditorProps) {
       onClose();
     }
   }
+
+  const currentTierInfo = entry?.progression?.ascension ? ascensionTiersById[entry.progression.ascension] : null;
+  const isExUnlocked = (currentTierInfo?.order ?? 0) >= 7; // Mythic+ and above
 
   return (
     <>
@@ -153,23 +138,25 @@ export function RosterHeroEditor({ heroId, onClose }: RosterHeroEditorProps) {
                   placeholder="1"
                   className="w-full rounded-lg border border-slate-700 bg-slate-800/50 px-3 py-2.5 text-lg font-bold text-amber-400 focus:border-amber-500/40 focus:outline-none"
                 />
-                <p className="mt-1 text-[11px] text-slate-600">Whole numbers only. No negative values.</p>
+                <p className="mt-1 text-[11px] text-slate-600">Whole numbers only (e.g. 240+).</p>
               </div>
 
               {/* Ascension */}
               <div className="card p-4">
                 <label className="mb-2 block text-xs font-medium uppercase tracking-wide text-slate-500">
-                  Ascension
+                  Ascension Tier
                 </label>
                 <button
                   onClick={() => setShowAscensionPicker(!showAscensionPicker)}
                   className="flex w-full items-center justify-between rounded-lg border border-slate-700 bg-slate-800/50 px-3 py-2.5 text-sm font-medium text-slate-200"
                 >
-                  <span>{entry?.progression?.ascension ? ascensionTiers.find((t) => t.id === entry.progression.ascension)?.label : 'Select...'}</span>
+                  <span className="font-semibold text-amber-300">
+                    {currentTierInfo ? `${currentTierInfo.label} (${currentTierInfo.shortLabel})` : 'Select...'}
+                  </span>
                   <ChevronDown size={16} className="text-slate-500" />
                 </button>
                 {showAscensionPicker && (
-                  <div className="mt-2 grid grid-cols-3 gap-1.5">
+                  <div className="mt-2 grid grid-cols-2 sm:grid-cols-3 gap-1.5 max-h-48 overflow-y-auto">
                     {ascensionTiers.map((tier) => (
                       <button
                         key={tier.id}
@@ -177,27 +164,73 @@ export function RosterHeroEditor({ heroId, onClose }: RosterHeroEditorProps) {
                           setAscension(heroId, tier.id as AscensionTier);
                           setShowAscensionPicker(false);
                         }}
-                        className={`rounded-lg border px-2 py-1.5 text-xs font-medium transition-colors ${
+                        className={`rounded-lg border px-2.5 py-2 text-xs font-medium transition-colors text-left flex items-center justify-between ${
                           entry?.progression?.ascension === tier.id
                             ? 'border-amber-500/40 bg-amber-500/15 text-amber-400'
-                            : 'border-slate-700 bg-slate-800/40 text-slate-400 hover:border-slate-600'
+                            : 'border-slate-700 bg-slate-800/40 text-slate-300 hover:border-slate-600'
                         }`}
                       >
-                        {tier.shortLabel}
+                        <span>{tier.label}</span>
+                        <span className="text-[10px] text-slate-500 font-mono">{tier.shortLabel}</span>
                       </button>
                     ))}
                   </div>
                 )}
               </div>
 
-              {/* Optional progression fields */}
+              {/* Exclusive Weapon (EX) */}
               <div className="card space-y-3 p-4">
-                <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
-                  Optional Progression
-                </p>
-                <ProgressionInput label="Signature Level" value={sigInput} onChange={handleSigChange} />
-                <ProgressionInput label="Furniture Level" value={furnInput} onChange={handleFurnChange} />
-                <ProgressionInput label="Engraving Level" value={engrInput} onChange={handleEngrChange} />
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                      Exclusive Weapon (EX)
+                    </p>
+                    <p className="text-[11px] text-slate-500">
+                      {isExUnlocked ? 'Levels +0 to +25 (Breakpoints: +5, +10, +15, +20, +25)' : 'Unlocks at Mythic+ and above'}
+                    </p>
+                  </div>
+                  {isExUnlocked && (
+                    <span className="rounded bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold text-amber-400 border border-amber-500/20">
+                      Unlocked
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex items-center justify-between gap-3 pt-1">
+                  <label className="text-sm text-slate-300">EX Weapon Level</label>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-sm font-semibold text-amber-400">+</span>
+                    <input
+                      type="number"
+                      inputMode="numeric"
+                      min="0"
+                      max="25"
+                      value={exWeaponInput}
+                      onChange={(e) => handleExWeaponChange(e.target.value)}
+                      placeholder="0"
+                      className="w-20 rounded-lg border border-slate-700 bg-slate-800/50 px-3 py-2 text-right text-sm font-semibold text-slate-200 focus:border-amber-500/40 focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                {isExUnlocked && (
+                  <div className="flex flex-wrap gap-1 pt-1">
+                    {[0, 5, 10, 15, 20, 25].map((lvl) => (
+                      <button
+                        key={lvl}
+                        type="button"
+                        onClick={() => handleExWeaponChange(String(lvl))}
+                        className={`rounded border px-2 py-1 text-[11px] font-medium transition-colors ${
+                          exWeaponInput === String(lvl)
+                            ? 'border-amber-500/50 bg-amber-500/20 text-amber-300'
+                            : 'border-slate-700 bg-slate-800/40 text-slate-400 hover:text-slate-200'
+                        }`}
+                      >
+                        +{lvl}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Remove button */}
@@ -212,30 +245,5 @@ export function RosterHeroEditor({ heroId, onClose }: RosterHeroEditorProps) {
         </div>
       </div>
     </>
-  );
-}
-
-function ProgressionInput({
-  label,
-  value,
-  onChange,
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-}) {
-  return (
-    <div className="flex items-center justify-between gap-3">
-      <label className="text-sm text-slate-400">{label}</label>
-      <input
-        type="number"
-        inputMode="numeric"
-        pattern="[0-9]*"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder="—"
-        className="w-24 rounded-lg border border-slate-700 bg-slate-800/50 px-3 py-2 text-right text-sm font-semibold text-slate-200 focus:border-amber-500/40 focus:outline-none"
-      />
-    </div>
   );
 }

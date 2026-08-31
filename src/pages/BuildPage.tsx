@@ -28,6 +28,7 @@ import {
   optimizeMultipleTeams,
   optimizeFormation,
   TEAM_OPTIMIZER_CONFIG,
+  scoreHeroInSlot,
   type OptimizerResult,
   type FormationResult,
   type PositionedHero,
@@ -142,28 +143,43 @@ export function BuildPage() {
       const posB = targetFormation.positions.find((p) => p.slotId === slotIdB);
 
       if (posA && posB) {
-        // Swap hero instances and slot attributes
+        const targetFormationData = formationsById[targetFormation.formationId];
+        const slotAData = targetFormationData?.slots.find(s => s.id === slotIdA);
+        const slotBData = targetFormationData?.slots.find(s => s.id === slotIdB);
+
+        // Swap hero instances and slot attributes, and rescore
         const updatedPositions = targetFormation.positions.map((pos) => {
           if (pos.slotId === slotIdA) {
+            const newHero = posB.hero;
+            const newScore = slotAData ? scoreHeroInSlot(newHero, slotAData, TEAM_OPTIMIZER_CONFIG) : { total: posB.positionScore, reasons: [] };
             return {
               ...pos,
-              hero: posB.hero,
-              reasons: [`Manually swapped from position ${posB.position}`],
+              hero: newHero,
+              positionScore: newScore.total,
+              reasons: [`Manually swapped from position ${posB.position}`, ...newScore.reasons],
             };
           }
           if (pos.slotId === slotIdB) {
+            const newHero = posA.hero;
+            const newScore = slotBData ? scoreHeroInSlot(newHero, slotBData, TEAM_OPTIMIZER_CONFIG) : { total: posA.positionScore, reasons: [] };
             return {
               ...pos,
-              hero: posA.hero,
-              reasons: [`Manually swapped from position ${posA.position}`],
+              hero: newHero,
+              positionScore: newScore.total,
+              reasons: [`Manually swapped from position ${posA.position}`, ...newScore.reasons],
             };
           }
           return pos;
         });
 
+        // Recalculate average formation score
+        const totalScore = updatedPositions.reduce((sum, p) => sum + p.positionScore, 0);
+        const avgScore = updatedPositions.length > 0 ? totalScore / updatedPositions.length : 0;
+
         copy[teamIdx] = {
           ...targetFormation,
           positions: updatedPositions,
+          formationScore: avgScore,
         };
       }
       return copy;

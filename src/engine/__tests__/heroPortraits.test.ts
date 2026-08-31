@@ -30,8 +30,8 @@ describe('Hero Portrait Image System', () => {
       }
     }
 
-    expect(realAssetCount).toBe(120);
-    expect(fallbackCount).toBe(4);
+    expect(realAssetCount).toBe(AVAILABLE_HERO_PORTRAITS.size);
+    expect(fallbackCount).toBe(124 - AVAILABLE_HERO_PORTRAITS.size);
     expect(realAssetCount + fallbackCount).toBe(124);
   });
 
@@ -55,7 +55,7 @@ describe('Hero Portrait Image System', () => {
     expect(hasHeroImage('unknown_hero_xyz')).toBe(false);
     expect(getHeroImageData('unknown_hero_xyz')).toBeNull();
 
-    // Specific unreleased heroes without art
+    // Specific heroes without static art fall back to initial avatar
     expect(hasHeroImage('rolan')).toBe(false);
     expect(hasHeroImage('taichi_agumon')).toBe(false);
     expect(hasHeroImage('voracia')).toBe(false);
@@ -69,9 +69,9 @@ describe('Hero Portrait Image System', () => {
     expect(data?.primaryUrl).toBe('/heroes/cecia.png');
   });
 
-  it('verifies major meta heroes have real portraits', () => {
-    const metaHeroes = ['cecia', 'eironn', 'thoran', 'smokey_meerky', 'reinier', 'odie', 'marilee', 'kruger', 'korin', 'scarlita', 'lily_may', 'alsa'];
-    for (const id of metaHeroes) {
+  it('verifies canonical heroes with local art have real portraits', () => {
+    const canonicalArtHeroes = ['cecia', 'alna', 'alsa', 'antandra', 'arden', 'atalanta', 'athalia', 'aurora', 'aliceth'];
+    for (const id of canonicalArtHeroes) {
       expect(hasHeroImage(id)).toBe(true);
       const data = getHeroImageData(id);
       expect(data?.primaryUrl).toBe(`/heroes/${id}.png`);

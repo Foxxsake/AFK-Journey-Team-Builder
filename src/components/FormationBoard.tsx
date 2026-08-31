@@ -168,9 +168,17 @@ function FormationSlot({
 
   if (!hero) {
     return (
-      <button
+      <div
+        role="button"
+        tabIndex={0}
         onClick={onClick}
-        className={`flex w-[72px] flex-col items-center gap-1 rounded-xl border border-dashed p-2 transition-all sm:w-[88px] ${
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onClick?.();
+          }
+        }}
+        className={`flex w-[72px] cursor-pointer flex-col items-center gap-1 rounded-xl border border-dashed p-2 transition-all sm:w-[88px] ${
           isSwapTarget
             ? 'border-amber-400 bg-amber-500/20 ring-2 ring-amber-400'
             : 'border-slate-700/40 bg-slate-800/20 hover:border-slate-600'
@@ -182,14 +190,22 @@ function FormationSlot({
         <span className="text-[9px] text-slate-600">
           {slot.roleHint ? (ROLE_LABELS as Record<string, string>)[slot.roleHint] ?? slot.roleHint : 'Empty'}
         </span>
-      </button>
+      </div>
     );
   }
 
   return (
-    <button
+    <div
+      role="button"
+      tabIndex={0}
       onClick={onClick}
-      className={`relative flex w-[72px] flex-col items-center gap-1 rounded-xl border p-2 transition-all active:scale-95 sm:w-[88px] ${
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick?.();
+        }
+      }}
+      className={`relative flex w-[72px] cursor-pointer flex-col items-center gap-1 rounded-xl border p-2 transition-all active:scale-95 sm:w-[88px] ${
         isSwapTarget
           ? 'border-amber-400 bg-amber-500/20 ring-2 ring-amber-400 animate-pulse'
           : isSelected
@@ -237,6 +253,6 @@ function FormationSlot({
       >
         {RARITY_LABELS[hero.hero.rarity]}
       </span>
-    </button>
+    </div>
   );
 }

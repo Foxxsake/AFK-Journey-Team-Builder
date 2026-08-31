@@ -18,17 +18,29 @@ export interface AscensionTierInfo {
 export const ascensionTiers: AscensionTierInfo[] = [
   { id: 'elite', label: 'Elite', shortLabel: 'E', order: 0 },
   { id: 'elite_plus', label: 'Elite+', shortLabel: 'E+', order: 1 },
-  { id: 'legendary', label: 'Legendary', shortLabel: 'L', order: 2 },
-  { id: 'legendary_plus', label: 'Legendary+', shortLabel: 'L+', order: 3 },
-  { id: 'mythic', label: 'Mythic', shortLabel: 'M', order: 4 },
-  { id: 'mythic_plus', label: 'Mythic+', shortLabel: 'M+', order: 5 },
-  { id: 'ascended', label: 'Ascended', shortLabel: 'A', order: 6 },
-  { id: 'ascended_1', label: 'Ascended +1', shortLabel: 'A+1', order: 7 },
-  { id: 'ascended_2', label: 'Ascended +2', shortLabel: 'A+2', order: 8 },
-  { id: 'ascended_3', label: 'Ascended +3', shortLabel: 'A+3', order: 9 },
-  { id: 'ascended_4', label: 'Ascended +4', shortLabel: 'A+4', order: 10 },
-  { id: 'ascended_5', label: 'Ascended +5', shortLabel: 'A+5', order: 11 },
+  { id: 'epic', label: 'Epic', shortLabel: 'Ep', order: 2 },
+  { id: 'epic_plus', label: 'Epic+', shortLabel: 'Ep+', order: 3 },
+  { id: 'legendary', label: 'Legendary', shortLabel: 'L', order: 4 },
+  { id: 'legendary_plus', label: 'Legendary+', shortLabel: 'L+', order: 5 },
+  { id: 'mythic', label: 'Mythic', shortLabel: 'M', order: 6 },
+  { id: 'mythic_plus', label: 'Mythic+', shortLabel: 'M+', order: 7 },
+  { id: 'supreme', label: 'Supreme', shortLabel: 'S', order: 8 },
+  { id: 'supreme_plus', label: 'Supreme+', shortLabel: 'S+', order: 9 },
+  { id: 'paragon_1', label: 'Paragon 1', shortLabel: 'P1', order: 10 },
+  { id: 'paragon_2', label: 'Paragon 2', shortLabel: 'P2', order: 11 },
+  { id: 'paragon_3', label: 'Paragon 3', shortLabel: 'P3', order: 12 },
+  { id: 'paragon_4', label: 'Paragon 4', shortLabel: 'P4', order: 13 },
 ];
+
+// Mapping for legacy tiers to their canonical equivalent
+const legacyTierMap: Partial<Record<AscensionTier, AscensionTierInfo>> = {
+  ascended: { id: 'ascended', label: 'Supreme', shortLabel: 'S', order: 8 },
+  ascended_1: { id: 'ascended_1', label: 'Supreme+', shortLabel: 'S+', order: 9 },
+  ascended_2: { id: 'ascended_2', label: 'Paragon 1', shortLabel: 'P1', order: 10 },
+  ascended_3: { id: 'ascended_3', label: 'Paragon 2', shortLabel: 'P2', order: 11 },
+  ascended_4: { id: 'ascended_4', label: 'Paragon 3', shortLabel: 'P3', order: 12 },
+  ascended_5: { id: 'ascended_5', label: 'Paragon 4', shortLabel: 'P4', order: 13 },
+};
 
 export const ascensionTiersById: Record<AscensionTier, AscensionTierInfo> =
   ascensionTiers.reduce(
@@ -36,7 +48,7 @@ export const ascensionTiersById: Record<AscensionTier, AscensionTierInfo> =
       acc[t.id] = t;
       return acc;
     },
-    {} as Record<AscensionTier, AscensionTierInfo>
+    { ...legacyTierMap } as Record<AscensionTier, AscensionTierInfo>
   );
 
 export const DEFAULT_ASCENSION: AscensionTier = 'elite';

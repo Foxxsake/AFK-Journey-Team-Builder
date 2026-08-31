@@ -138,10 +138,19 @@ export interface Hero {
 export type AscensionTier =
   | 'elite'
   | 'elite_plus'
+  | 'epic'
+  | 'epic_plus'
   | 'legendary'
   | 'legendary_plus'
   | 'mythic'
   | 'mythic_plus'
+  | 'supreme'
+  | 'supreme_plus'
+  | 'paragon_1'
+  | 'paragon_2'
+  | 'paragon_3'
+  | 'paragon_4'
+  // Legacy aliases for backward compatibility
   | 'ascended'
   | 'ascended_1'
   | 'ascended_2'
@@ -151,7 +160,11 @@ export type AscensionTier =
 
 export interface RosterHeroProgression {
   ascension: AscensionTier;
+  /** AFK Journey Exclusive Weapon level (0–25). Unlocks at Mythic+. */
+  exclusiveWeaponLevel?: number;
+  /** Legacy alias for exclusiveWeaponLevel. */
   signatureLevel?: number;
+  /** Legacy fields preserved for schema compatibility */
   furnitureLevel?: number;
   engravingLevel?: number;
   /** Reserved for future progression systems — do not populate yet. */
@@ -181,6 +194,7 @@ export interface RosterExportData {
     owned: boolean;
     level: number;
     ascension: AscensionTier;
+    exclusiveWeaponLevel?: number;
     signatureLevel?: number;
     furnitureLevel?: number;
     engravingLevel?: number;
