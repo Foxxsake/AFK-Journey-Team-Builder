@@ -45,7 +45,13 @@ function hasProvenance(ability: HeroAbility): boolean {
 }
 
 function isValidEvidenceType(evidence: string): boolean {
-  return evidence === 'official' || evidence === 'structured_source' || evidence === 'verified_manual' || evidence === 'heuristic';
+  return (
+    evidence === 'official' ||
+    evidence === 'structured_source' ||
+    evidence === 'verified_manual' ||
+    evidence === 'verified' ||
+    evidence === 'heuristic'
+  );
 }
 
 // ============================================================

@@ -380,7 +380,7 @@ describe('Evidence-Aware Merging', () => {
         reason: 'Energy synergy',
         gameModes: [],
         confidence: 'medium',
-        evidence: 'structured_source',
+        evidence: 'verified',
         source: 'wiki',
       },
     ];
@@ -640,10 +640,10 @@ describe('Counter Validation', () => {
 // ============================================================
 
 describe('Synergy Expansion', () => {
-  it('has verified synergies (structured_source)', () => {
+  it('has verified synergies (verified)', () => {
     const verified = getVerifiedSynergies();
     expect(verified.length).toBeGreaterThan(0);
-    expect(verified.every((s) => s.evidence === 'structured_source')).toBe(true);
+    expect(verified.every((s) => s.evidence === 'verified')).toBe(true);
   });
 
   it('has heuristic synergies', () => {
@@ -659,12 +659,12 @@ describe('Synergy Expansion', () => {
   });
 
   it('Rowan has verified energy synergies', () => {
-    const rowanSyns = getHeroSynergies('rowan').filter((s) => s.evidence === 'structured_source');
+    const rowanSyns = getHeroSynergies('rowan').filter((s) => s.evidence === 'verified');
     expect(rowanSyns.some((s) => s.category === 'energy')).toBe(true);
   });
 
   it('Hewynn has verified sustain synergies', () => {
-    const hewynnSyns = getHeroSynergies('hewynn').filter((s) => s.evidence === 'structured_source');
+    const hewynnSyns = getHeroSynergies('hewynn').filter((s) => s.evidence === 'verified');
     expect(hewynnSyns.some((s) => s.category === 'sustain')).toBe(true);
   });
 
@@ -728,7 +728,7 @@ describe('Optimiser Integration with Expanded Data', () => {
     expect(result.breakdown.synergy).toBeGreaterThan(50);
     expect(result.synergyResult!.matchedSynergies.length).toBeGreaterThan(0);
     // Some synergies should be verified
-    const verified = result.synergyResult!.matchedSynergies.filter((s) => s.evidence === 'structured_source');
+    const verified = result.synergyResult!.matchedSynergies.filter((s) => s.evidence === 'verified');
     expect(verified.length).toBeGreaterThan(0);
   });
 
@@ -801,7 +801,7 @@ describe('Optimiser Integration with Expanded Data', () => {
 
 describe('Dataset Backward Compatibility (Stage 10)', () => {
   it('old dataset without Stage 9/10 fields is still valid', () => {
-    const oldDataset = {
+    const oldDataset: Record<string, unknown> = {
       schemaVersion: 1,
       generatedAt: '2026-08-27',
       sources: [],

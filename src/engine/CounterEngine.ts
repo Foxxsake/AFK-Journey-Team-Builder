@@ -267,17 +267,6 @@ function buildCounterIndex(): Map<string, CounterRelationship[]> {
   }
 
   // Derive counters from ability effects
-  const verifiedHeroIds = Object.keys(
-    // Import dynamically to avoid circular dependency
-    {} as Record<string, unknown>
-  );
-
-  // For each hero with verified effects, derive counters
-  // We need to check all heroes — get from intelligence
-  for (const heroId of Object.keys(getHeroIntelligence() ? {} : {})) {
-    // This is handled below in a more efficient way
-  }
-
   return index;
 }
 

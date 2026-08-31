@@ -563,7 +563,7 @@ describe('Optimiser Meta Integration', () => {
 
   it('meta consensus influences hero strength score', () => {
     const hero = heroesById['scarlita'];
-    const playerHero = { ...hero, roster: { heroId: hero.id, owned: true, level: 100, progression: { ascension: 'mythic' }, addedAt: '', updatedAt: '' } };
+    const playerHero = { ...hero, roster: { heroId: hero.id, owned: true, level: 100, progression: { ascension: 'mythic' as const }, addedAt: '', updatedAt: '' } };
     const mode = { id: 'campaign' };
 
     // Without consensus — should fall back to rarity
@@ -582,7 +582,7 @@ describe('Optimiser Meta Integration', () => {
 
   it('optimiser still works without meta data', () => {
     const hero = heroesById['chippy']; // No meta data for chippy
-    const playerHero = { ...hero, roster: { heroId: hero.id, owned: true, level: 100, progression: { ascension: 'mythic' }, addedAt: '', updatedAt: '' } };
+    const playerHero = { ...hero, roster: { heroId: hero.id, owned: true, level: 100, progression: { ascension: 'mythic' as const }, addedAt: '', updatedAt: '' } };
     const mode = { id: 'campaign' };
     const score = calculateHeroStrength(playerHero, mode, undefined, new Map());
     // Should fall back to rarity (chippy is rare_level = 30)
@@ -591,7 +591,7 @@ describe('Optimiser Meta Integration', () => {
 
   it('stale meta has reduced influence via confidence adjustment', () => {
     const hero = heroesById['scarlita'];
-    const playerHero = { ...hero, roster: { heroId: hero.id, owned: true, level: 100, progression: { ascension: 'mythic' }, addedAt: '', updatedAt: '' } };
+    const playerHero = { ...hero, roster: { heroId: hero.id, owned: true, level: 100, progression: { ascension: 'mythic' as const }, addedAt: '', updatedAt: '' } };
     const consensus = dataIntelligenceService.getConsensus('scarlita', 'campaign');
     expect(consensus).not.toBeNull();
 
@@ -617,7 +617,7 @@ describe('Optimiser Meta Integration', () => {
     // The meta layer only scores heroes that are already in the pool.
     const hero = heroesById['scarlita'];
     // Even with high meta, if hero isn't in playerHeroes, it won't appear
-    const score = calculateHeroStrength({ ...hero, roster: { heroId: hero.id, owned: true, level: 100, progression: { ascension: 'mythic' }, addedAt: '', updatedAt: '' } }, { id: 'campaign' });
+    const score = calculateHeroStrength({ ...hero, roster: { heroId: hero.id, owned: true, level: 100, progression: { ascension: 'mythic' as const }, addedAt: '', updatedAt: '' } }, { id: 'campaign' });
     expect(score).toBeGreaterThanOrEqual(0);
     expect(score).toBeLessThanOrEqual(100);
   });

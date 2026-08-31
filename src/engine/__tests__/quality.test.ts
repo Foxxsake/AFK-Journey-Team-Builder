@@ -8,6 +8,7 @@ import { dataUpdateService } from '@/services/DataUpdateService';
 // Helpers to build test hero data
 function makeHero(name: string, opts?: Partial<DotGGHeroRaw>): DotGGHeroRaw {
   return {
+    id: name.toLowerCase(),
     name,
     url: name.toLowerCase(),
     slug: name.toLowerCase(),

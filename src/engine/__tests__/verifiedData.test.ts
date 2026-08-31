@@ -142,6 +142,7 @@ describe('Evidence Hierarchy', () => {
     const ranks: Record<EvidenceType, number> = {
       official: 4,
       structured_source: 3,
+      verified: 3,
       verified_manual: 2,
       heuristic: 1,
     };
@@ -291,7 +292,7 @@ describe('Counter-Aware Team Scoring', () => {
     const result = scoreTeam(heroes, campaignMode, TEAM_OPTIMIZER_CONFIG, undefined, undefined, undefined, enemy);
     const counterContribution = result.breakdown.counter * TEAM_OPTIMIZER_CONFIG.counterWeight;
     const totalWeighted = Object.entries(result.breakdown).reduce(
-      (sum, [key, val]) => sum + val * (TEAM_OPTIMIZER_CONFIG as Record<string, number>)[`${key}Weight`],
+      (sum, [key, val]) => sum + val * (TEAM_OPTIMIZER_CONFIG as unknown as Record<string, number>)[`${key}Weight`],
       0
     );
     // Counter should be less than 15% of total weighted score
@@ -438,7 +439,7 @@ describe('Multi-Team Counter Behaviour', () => {
 
 describe('Dataset Backward Compatibility (Stage 9)', () => {
   it('old dataset without verified fields is still valid', () => {
-    const oldDataset = {
+    const oldDataset: Record<string, unknown> = {
       schemaVersion: 1,
       generatedAt: '2026-08-27',
       sources: [],

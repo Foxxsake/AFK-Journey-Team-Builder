@@ -94,7 +94,7 @@ export function BuildPage() {
           avoidHeroReuse,
           debug: debugMode,
           metaConsensus: modeConsensus,
-          enemyTeam,
+          enemyTeam: enemyTeam ?? undefined,
           bossId: selectedBossId,
         },
         { config, metaConsensus: modeConsensus }
@@ -1066,11 +1066,11 @@ function EnemyAnalysisSection({
       )}
 
       {/* Recommended counters */}
-      {analysis.recommendedCounters.length > 0 && (
+      {analysis.recommendedHeroes.length > 0 && (
         <div className="mb-2">
           <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-amber-400/70">Recommended Counters</p>
           <div className="flex flex-wrap gap-1.5">
-            {analysis.recommendedCounters.map((c, i) => {
+            {analysis.recommendedHeroes.map((c, i) => {
               const h = heroesById[c.heroId];
               return (
                 <span key={i} className={`flex items-center gap-1.5 rounded-md px-2 py-0.5 text-[10px] ${

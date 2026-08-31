@@ -48,7 +48,7 @@ export function generateExplanation(
 
   // Add synergy context
   if (scoreResult.synergyResult && scoreResult.synergyResult.matchedSynergies.length > 0) {
-    const verified = scoreResult.synergyResult.matchedSynergies.filter((s) => s.evidence === 'structured_source').length;
+    const verified = scoreResult.synergyResult.matchedSynergies.filter((s) => s.evidence === 'verified').length;
     if (verified > 0) {
       summary += `${verified} verified synerg${verified > 1 ? 'ies' : 'y'} detected. `;
     } else {

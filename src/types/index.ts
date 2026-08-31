@@ -383,3 +383,7 @@ export interface DatasetExport {
   /** Boss profiles (optional — backward compatible). */
   bossProfiles?: import('./intelligence').BossProfile[];
 }
+
+export type HeroFaction = FactionId;
+export type AscensionTierId = AscensionTier;
+export type { PositionedHero } from '../engine/types';

@@ -191,11 +191,12 @@ export interface TeamSynergyResult {
 // EVIDENCE HIERARCHY
 // ============================================================
 
-export type EvidenceType = 'official' | 'structured_source' | 'verified_manual' | 'heuristic';
+export type EvidenceType = 'official' | 'structured_source' | 'verified_manual' | 'verified' | 'heuristic';
 
 export const EVIDENCE_RANK: Record<EvidenceType, number> = {
   official: 4,
   structured_source: 3,
+  verified: 3,
   verified_manual: 2,
   heuristic: 1,
 };
@@ -229,7 +230,8 @@ export type AbilityEffectType =
   | 'taunt'
   | 'mark'
   | 'life_steal'
-  | 'survivability';
+  | 'survivability'
+  | 'protection';
 
 export interface HeroAbilityEffect {
   type: AbilityEffectType;

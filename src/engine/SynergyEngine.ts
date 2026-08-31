@@ -156,7 +156,7 @@ function buildVerifiedSynergies(): SynergyRelationship[] {
     reason,
     gameModes: modes,
     confidence: 'medium',
-    evidence: 'structured_source',
+    evidence: 'verified',
     source: wikiSrc,
   });
 
@@ -365,7 +365,7 @@ export function getAllSynergyData(): SynergyRelationship[] {
  * Get verified synergies only (structured_source evidence).
  */
 export function getVerifiedSynergies(): SynergyRelationship[] {
-  return synergyData.filter((s) => s.evidence === 'structured_source');
+  return synergyData.filter((s) => s.evidence === 'verified');
 }
 
 /**

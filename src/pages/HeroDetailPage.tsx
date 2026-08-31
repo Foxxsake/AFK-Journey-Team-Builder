@@ -49,7 +49,7 @@ export function HeroDetailPage({ heroId, onBack }: HeroDetailPageProps) {
   const hasModeRatings = hero.modeRatings && hero.modeRatings.length > 0;
   const intelligence = getHeroIntelligence(hero.id);
   const engineSynergies = getHeroSynergies(hero.id);
-  const verifiedSyns = engineSynergies.filter((s) => s.evidence === 'structured_source' || s.evidence === 'official');
+  const verifiedSyns = engineSynergies.filter((s) => s.evidence === 'verified');
   const heuristicSyns = engineSynergies.filter((s) => s.evidence === 'heuristic');
   const antiSyns = engineSynergies.filter((s) => s.synergyScore < 0);
   const verifiedData = getVerifiedHeroData(hero.id);

@@ -55,7 +55,7 @@ describe('Comprehensive Team Builder & Optimizer Pipeline Audit', () => {
         makePlayerHero('koko', 240, 'ascended', 10),
         makePlayerHero('marilee', 240, 'ascended', 10),
       ];
-      const result = optimizeTeam({ playerHeroes, mode: campaignMode });
+      const result = optimizeTeam({ playerHeroes, mode: campaignMode, teamCount: 1, avoidHeroReuse: false });
       expect(result.bestTeam).not.toBeNull();
       const ownedIds = new Set(playerHeroes.map((h) => h.id));
       for (const team of result.teams) {
@@ -76,8 +76,8 @@ describe('Comprehensive Team Builder & Optimizer Pipeline Audit', () => {
         makePlayerHero('carolina', 240, 'ascended', 10),
         makePlayerHero('arden', 240, 'ascended', 10),
       ];
-      const res1 = optimizeTeam({ playerHeroes, mode: campaignMode });
-      const res2 = optimizeTeam({ playerHeroes, mode: campaignMode });
+      const res1 = optimizeTeam({ playerHeroes, mode: campaignMode, teamCount: 1, avoidHeroReuse: false });
+      const res2 = optimizeTeam({ playerHeroes, mode: campaignMode, teamCount: 1, avoidHeroReuse: false });
       expect(res1.bestTeam?.heroIds).toEqual(res2.bestTeam?.heroIds);
       expect(res1.bestTeam?.score).toBe(res2.bestTeam?.score);
       expect(res1.teams.map((t) => t.heroIds)).toEqual(res2.teams.map((t) => t.heroIds));
@@ -97,7 +97,7 @@ describe('Comprehensive Team Builder & Optimizer Pipeline Audit', () => {
       const arden = makePlayerHero('arden', 240, 'ascended', 15);
       roster.push(odie, arden);
 
-      const result = optimizeTeam({ playerHeroes: roster, mode: dreamRealmMode });
+      const result = optimizeTeam({ playerHeroes: roster, mode: dreamRealmMode, teamCount: 1, avoidHeroReuse: false });
       expect(result.bestTeam).not.toBeNull();
       const evaluatedAnyOdie = result.teams.some((t) => t.heroIds.includes('odie')) || result.bestTeam?.heroIds.includes('odie');
       expect(evaluatedAnyOdie || roster.some((h) => h.id === 'odie')).toBe(true);
@@ -135,8 +135,8 @@ describe('Comprehensive Team Builder & Optimizer Pipeline Audit', () => {
         makePlayerHero('rowan', 240, 'ascended', 10),
       ];
 
-      const resCampaign = optimizeTeam({ playerHeroes: roster, mode: campaignMode });
-      const resDreamRealm = optimizeTeam({ playerHeroes: roster, mode: dreamRealmMode });
+      const resCampaign = optimizeTeam({ playerHeroes: roster, mode: campaignMode, teamCount: 1, avoidHeroReuse: false });
+      const resDreamRealm = optimizeTeam({ playerHeroes: roster, mode: dreamRealmMode, teamCount: 1, avoidHeroReuse: false });
 
       expect(resCampaign.bestTeam?.score).toBeGreaterThan(0);
       expect(resDreamRealm.bestTeam?.score).toBeGreaterThan(0);
@@ -157,6 +157,8 @@ describe('Comprehensive Team Builder & Optimizer Pipeline Audit', () => {
       const necroResult = optimizeTeam({
         playerHeroes: roster,
         mode: dreamRealmMode,
+        teamCount: 1,
+        avoidHeroReuse: false,
         bossId: 'necrodrakon',
       });
 
@@ -181,13 +183,17 @@ describe('Comprehensive Team Builder & Optimizer Pipeline Audit', () => {
       const resultWithEnemy = optimizeTeam({
         playerHeroes: roster,
         mode: arenaMode,
+        teamCount: 1,
+        avoidHeroReuse: false,
         enemyTeam,
       });
 
       const resultWithoutEnemy = optimizeTeam({
         playerHeroes: roster,
         mode: arenaMode,
-        enemyTeam: null,
+        teamCount: 1,
+        avoidHeroReuse: false,
+        enemyTeam: undefined,
       });
 
       expect(resultWithEnemy.bestTeam?.breakdown.counter).toBeGreaterThan(50);
@@ -244,12 +250,10 @@ describe('Comprehensive Team Builder & Optimizer Pipeline Audit', () => {
         heroId: 'cecia',
         name: 'Queen\'s Summons',
         description: 'Summons Mr. Carlyle',
-        type: 'ultimate',
-        effectTypes: ['damage', 'crowd_control'],
+        abilityType: 'ultimate',
+        effects: [{ type: 'damage', description: 'Deals damage' }, { type: 'crowd_control', description: 'Entangles' }],
         cooldown: 0,
-        energyCost: 1000,
         range: 5,
-        target: 'area',
         evidence: 'structured_source',
         source: 'AFK Journey Wiki',
         retrievedAt: '2026-08-27',

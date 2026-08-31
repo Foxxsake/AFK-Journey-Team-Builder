@@ -180,7 +180,7 @@ function FormationSlot({
           <span className="text-sm font-bold text-slate-600">{slot.position}</span>
         </div>
         <span className="text-[9px] text-slate-600">
-          {slot.roleHint ? ROLE_LABELS[slot.roleHint] : 'Empty'}
+          {slot.roleHint ? (ROLE_LABELS as Record<string, string>)[slot.roleHint] ?? slot.roleHint : 'Empty'}
         </span>
       </button>
     );

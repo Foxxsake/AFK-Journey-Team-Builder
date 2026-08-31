@@ -12,6 +12,8 @@ import { scoreTeam, gradeFromScore } from './TeamScorer';
 import { generateExplanation } from './ExplanationEngine';
 import { calculateHeroStrength } from './HeroStrengthScorer';
 import { calculateProgressionScore } from './ProgressionScorer';
+import { getBossProfile } from '@/data/intelligence/modeIntelligence';
+import { getHeroCounters } from './CounterEngine';
 
 /**
  * Generates valid candidate teams from the player's owned heroes.
@@ -175,13 +177,39 @@ export function optimizeTeam(
     supports.slice(0, 3).forEach((h) => selectedSubset.add(h.id));
     others.slice(0, 6).forEach((h) => selectedSubset.add(h.id));
 
+    // Protect boss-specific counters when a boss is targeted
+    if (input.bossId) {
+      const boss = getBossProfile(input.bossId);
+      if (boss) {
+        for (const counter of boss.counters) {
+          if (available.some((h) => h.id === counter.heroId)) {
+            selectedSubset.add(counter.heroId);
+          }
+        }
+      }
+    }
+
+    // Protect enemy counters when an enemy team is provided
+    if (input.enemyTeam?.heroes && input.enemyTeam.heroes.length > 0) {
+      const enemyHeroSet = new Set(input.enemyTeam.heroes);
+      for (const hero of available) {
+        const counters = getHeroCounters(hero.id);
+        const countersEnemy = counters.some(
+          (c) => c.counterHeroId === '*' || enemyHeroSet.has(c.counterHeroId)
+        );
+        if (countersEnemy) {
+          selectedSubset.add(hero.id);
+        }
+      }
+    }
+
     // Fill the remaining slots up to subsetSize with highest overall quick score
     for (const h of sorted) {
       if (selectedSubset.size >= subsetSize) break;
       selectedSubset.add(h.id);
     }
 
-    const subset = available.filter((h) => selectedSubset.has(h.id));
+    const subset = sorted.filter((h) => selectedSubset.has(h.id));
     candidateGroups = generateCombinations(subset, teamSize, config.maxCandidates);
     candidatesPruned = totalCombinations - candidateGroups.length;
     warnings.push(`Large roster: evaluated top ${subset.length} heroes (${candidateGroups.length} of ${totalCombinations} possible combinations).`);
@@ -222,8 +250,13 @@ export function optimizeTeam(
     return emptyResult(warnings, startTime, config);
   }
 
-  // Sort by score descending
-  scoredTeams.sort((a, b) => b.score - a.score);
+  // Sort by score descending with fully deterministic tie-breaking
+  scoredTeams.sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score;
+    if (b.breakdown.progression !== a.breakdown.progression) return b.breakdown.progression - a.breakdown.progression;
+    if (b.breakdown.heroStrength !== a.breakdown.heroStrength) return b.breakdown.heroStrength - a.breakdown.heroStrength;
+    return a.heroIds.join(',').localeCompare(b.heroIds.join(','));
+  });
 
   // Select best + diverse alternatives
   const selectedTeams: ScoredTeam[] = [scoredTeams[0]];

@@ -169,12 +169,12 @@ export function evaluateDotGGQuality(heroes: DotGGHeroRaw[]): DataQualityResult 
 
   // Build explanation
   let explanation: string;
-  if (level === 'invalid') {
-    explanation = 'No usable data received.';
-  } else if (level === 'suspicious') {
+  if (level === 'suspicious') {
     explanation = 'Tier data appears suspicious — meta influence disabled. Raw records retained.';
-  } else {
+  } else if (level === 'valid') {
     explanation = `${recordsUsable} records usable for consensus.`;
+  } else {
+    explanation = 'No usable data received.';
   }
 
   return {

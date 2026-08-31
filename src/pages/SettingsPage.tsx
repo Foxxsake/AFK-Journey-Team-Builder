@@ -55,6 +55,7 @@ export function SettingsPage() {
         received: 0, mapped: 0, unknown: 0, rejected: 0, withoutTiers: 0,
         errors: [err instanceof Error ? err.message : 'Unknown error'],
         warnings: [], diff: null, heroesEnriched: [], fromCache: false,
+        quality: null,
       });
     }
     setUpdating(false);
@@ -287,7 +288,7 @@ export function SettingsPage() {
                   ? 'Update failed — existing data preserved'
                   : updateResult.quality?.level === 'suspicious'
                   ? `Connected — but tier data appears suspicious. Meta influence disabled.`
-                  : `Updated successfully — ${updateResult.mapped} heroes mapped, ${updateResult.records.length} records added`}
+                  : `Updated successfully — ${updateResult.mapped} heroes mapped, ${updateResult.heroesEnriched.length} heroes enriched`}
               </span>
             </div>
             {updateResult.quality?.reasons.map((r, i) => (

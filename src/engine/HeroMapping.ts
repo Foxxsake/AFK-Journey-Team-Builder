@@ -1,4 +1,4 @@
-import type { SourceHeroMapping } from '@/types';
+import type { SourceHeroMapping, SourceConfidence } from '@/types';
 import { heroesById } from '@/data/heroes';
 
 /**
@@ -32,7 +32,7 @@ export function resolveHeroId(
   sourceId: string,
   sourceHeroName: string,
   mappings: SourceHeroMapping[] = heroMappings
-): { canonicalHeroId: string | null; confidence: 'high' | 'medium' | 'low' } {
+): { canonicalHeroId: string | null; confidence: SourceConfidence } {
   // 1. Check explicit mappings first
   const mapping = mappings.find(
     (m) => m.sourceId === sourceId && m.sourceHeroName === sourceHeroName

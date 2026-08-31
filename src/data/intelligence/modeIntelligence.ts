@@ -170,7 +170,7 @@ const bossProfiles: BossProfile[] = [
       { name: 'Prismatic Gaze', description: 'Fires high-damage eye laser sweeps and summons minions with shields.' },
       { name: 'Minion Wave Shields', description: 'Spawns minions requiring fast physical or true damage to prevent enrage.' },
     ],
-    recommendedFunctions: ['aoe_damage', 'single_target_damage', 'healing', 'buffing', 'armor_break'],
+    recommendedFunctions: ['aoe_damage', 'single_target_damage', 'healing', 'buffing', 'debuffing'],
     counters: [
       { heroId: 'marilee', reason: 'Top-tier sustained boss shredder', confidence: 'high', evidence: 'structured_source' },
       { heroId: 'korin', reason: 'True damage melts minion shields quickly', confidence: 'high', evidence: 'structured_source' },
@@ -191,7 +191,7 @@ const bossProfiles: BossProfile[] = [
       { name: 'Blizzard Freeze', description: 'Periodically traps the highest DPS hero in a Snow Prison; requires rapid hit count to break.' },
       { name: 'Freezing Storm', description: 'Reduces team attack speed and haste across the battlefield.' },
     ],
-    recommendedFunctions: ['single_target_damage', 'healing', 'haste', 'buffing', 'cleanse'],
+    recommendedFunctions: ['single_target_damage', 'healing', 'haste', 'buffing', 'debuffing'],
     counters: [
       { heroId: 'marilee', reason: 'High attack frequency frees allies from ice tombs quickly', confidence: 'high', evidence: 'structured_source' },
       { heroId: 'odie', reason: 'Continuous poison ticks rapidly damage snow prison and boss', confidence: 'high', evidence: 'structured_source' },
@@ -233,7 +233,7 @@ const bossProfiles: BossProfile[] = [
       { name: 'Honey Splash', description: 'Applies stacking vulnerability and heavy physical swipes.' },
       { name: 'Enraged Roar', description: 'Massive front cone physical damage that ramps up over fight duration.' },
     ],
-    recommendedFunctions: ['single_target_damage', 'armor_break', 'healing', 'buffing', 'shielding'],
+    recommendedFunctions: ['single_target_damage', 'debuffing', 'healing', 'buffing', 'shielding'],
     counters: [
       { heroId: 'marilee', reason: 'Out-ranges honey splashes while delivering maximum sustained DPS', confidence: 'high', evidence: 'structured_source' },
       { heroId: 'kruger', reason: 'Physical resistance reduction essential for scoring milestones', confidence: 'high', evidence: 'structured_source' },

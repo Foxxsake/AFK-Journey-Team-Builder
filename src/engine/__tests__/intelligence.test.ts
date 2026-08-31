@@ -272,7 +272,7 @@ describe('Team Scorer Integration', () => {
     const maxComponent = Math.max(...Object.values(result.breakdown));
     const synergyContribution = result.breakdown.synergy * TEAM_OPTIMIZER_CONFIG.synergyWeight;
     const totalWeighted = Object.entries(result.breakdown).reduce(
-      (sum, [key, val]) => sum + val * (TEAM_OPTIMIZER_CONFIG as Record<string, number>)[`${key}Weight`],
+      (sum, [key, val]) => sum + val * (TEAM_OPTIMIZER_CONFIG as unknown as Record<string, number>)[`${key}Weight`],
       0
     );
     // Synergy should be less than 20% of total weighted score
@@ -452,7 +452,7 @@ describe('Multiple Team with Synergy', () => {
 
 describe('Dataset Export Compatibility', () => {
   it('old dataset without intelligence fields is still valid', () => {
-    const oldDataset = {
+    const oldDataset: Record<string, unknown> = {
       schemaVersion: 1,
       generatedAt: '2026-08-27',
       sources: [],

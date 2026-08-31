@@ -251,8 +251,8 @@ describe('Mode-Aware Optimisation', () => {
     const heuristicSyns = getHeuristicSynergies();
     expect(verifiedSyns.length).toBeGreaterThan(0);
     expect(heuristicSyns.length).toBeGreaterThan(0);
-    // Verified synergies have structured_source evidence
-    expect(verifiedSyns.every((s) => s.evidence === 'structured_source')).toBe(true);
+    // Verified synergies have verified evidence
+    expect(verifiedSyns.every((s) => s.evidence === 'verified')).toBe(true);
   });
 
   it('player progression still matters more than intelligence', () => {
